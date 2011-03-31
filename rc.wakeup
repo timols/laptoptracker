@@ -1,0 +1,24 @@
+#! /bin/sh
+
+date=$(date +%d%m%y%H%M%S).jpg;
+
+sleep 5;
+
+/bin/isightcapture -w 640 -h 480 -t jpg /Users/timols/Dropbox/Photos/StartupCapture/$date;
+
+sleep 60;
+
+cur_status=`ifconfig en0 | grep -o '[a-z]*active'`;
+cur_user=`id -un`;
+cur_host=`scutil --get LocalHostName`;
+
+if [ $cur_status == 'active' ]; then
+  # ip_string=`curl -s http://checkip.dyndns.org | grep -o "[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*"`;
+  ip_string=`python /Users/timols/Documents/get_geoip_data.py`
+else
+  ip_string="connection inactive";
+fi
+
+ip_log_string="$(date +%d/%m/%y' '%H:%M:%S), ${cur_host}, ${cur_user}, ${ip_string}";
+
+echo $ip_log_string >> /Users/timols/Dropbox/Photos/StartupCapture/IPLog.txt;
